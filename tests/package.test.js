@@ -7,7 +7,7 @@ const root=path.resolve(__dirname,'..');
 test('manifest parses and every declared local resource exists',()=>{
  const manifest=JSON.parse(fs.readFileSync(path.join(root,'manifest.json'),'utf8'));
  assert.equal(manifest.manifest_version,3);
- assert.equal(manifest.version,'0.4.1');
+ assert.equal(manifest.version,'1.0.0');
  assert.ok(manifest.content_scripts.length>0);
  for(const script of manifest.content_scripts)for(const file of [...(script.js||[]),...(script.css||[])])assert.ok(fs.existsSync(path.join(root,file)),`missing content resource: ${file}`);
  for(const page of manifest.sandbox.pages)assert.ok(fs.existsSync(path.join(root,page)),`missing sandbox page: ${page}`);

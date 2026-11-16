@@ -6,7 +6,7 @@
 [![Chrome](https://img.shields.io/badge/chrome-114%2B-4285f4?style=flat-square)](https://www.google.com/chrome/)
 [![Pyodide](https://img.shields.io/badge/pyodide-0.26.4-1e40af?style=flat-square)](https://pyodide.org/)
 [![Tests](https://img.shields.io/badge/tests-49%20passing-16a34a?style=flat-square)](tests)
-[![Version](https://img.shields.io/badge/version-0.4.1-64748b?style=flat-square)](manifest.json)
+[![Version](https://img.shields.io/badge/version-1.0.0-64748b?style=flat-square)](manifest.json)
 
 ![BirdPlot rendering a damped sine wave inside a chat](docs/card.png)
 
@@ -134,6 +134,14 @@ The tests cover package parsing, Python block extraction, code repair, Plotly ha
 
 ## Changelog
 
+### 1.0.0
+
+- First public release
+- Local Python execution through Pyodide 0.26.4 in a Web Worker
+- Renders Matplotlib as SVG, animations as GIF, and Plotly as interactive charts
+- Auto-repair for common AI code errors, with engine timeouts and Retry
+- Apache-2.0 license, notices, security policy, and trademark policy added
+
 ### 0.4.1
 
 - Renamed the project to BirdPlot while keeping StudentViz formats working as aliases
@@ -149,4 +157,8 @@ Earlier changes are described in [PATCH_NOTES.md](PATCH_NOTES.md).
 
 ## License
 
-No license has been chosen for this project yet. Until one is added, the code is under default copyright and may not be redistributed. Add a `LICENSE` file before publishing if you want others to reuse it.
+BirdPlot is licensed under the [Apache License 2.0](LICENSE). Redistributions must keep the [NOTICE](NOTICE) file, and the BirdPlot name and logo are covered by the [trademark policy](TRADEMARK.md), not by the code license.
+
+Bundled third-party components keep their own licenses; see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+Security reports: see [SECURITY.md](SECURITY.md).
