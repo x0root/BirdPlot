@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BirdPlot viewer</title><link rel="stylesheet" href="viewer.css">
+<script>
+(function(){
+  var origGetContext = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function(type, attribs) {
+    if (type === "2d") {
+      attribs = Object.assign({ willReadFrequently: true }, attribs || {});
+    }
+    return origGetContext.call(this, type, attribs);
+  };
+})();
+</script>
+</head>
+<body>
+<header>
+ <div><span class="badge" id="kind">BIRDPLOT</span><h1 id="title">Getting your visual ready…</h1></div>
+ <div class="actions"><button id="grid" type="button" title="Show or hide the gridlines" aria-pressed="true" hidden>▦ Grid</button><button id="reset" type="button" title="Reset view">↺ Reset</button><button id="export" type="button" title="Download source JSON">↓ JSON</button></div>
+</header>
+<p id="description"></p>
+<div id="notes" hidden></div>
+<div id="stage"></div>
+<div id="error" role="alert" hidden>
+ <p class="error-head">This visual could not be drawn</p>
+ <p class="error-msg" id="error-msg"></p>
+ <details id="error-more" hidden><summary>What the AI wrote</summary><pre id="error-detail"></pre></details>
+ <div class="error-actions"><button id="copy-error" type="button">Copy error</button><span id="copy-state" aria-live="polite"></span></div>
+ <p class="error-hint">Paste the copied text back to the AI — it can rewrite the block.</p>
+</div>
+<div id="controls"></div>
+<footer><span id="status">Waiting for a complete visual</span><span id="hint"></span></footer>
+<script src="vendor/plotly.min.js"></script><script src="viewer.js"></script>
+</body>
+</html>

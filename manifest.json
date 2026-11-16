@@ -1,0 +1,80 @@
+{
+  "manifest_version": 3,
+  "name": "BirdPlot \u2014 See what AI means",
+  "version": "0.4.1",
+  "description": "Render and automatically repair AI-authored visualizations, Python plots, geometry and 3D scenes in supported AI chats.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "BirdPlot setup"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://cdn.jsdelivr.net/*",
+    "https://files.pythonhosted.org/*",
+    "https://pypi.org/*",
+    "https://pypi.python.org/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://gemini.google.com/*",
+        "https://claude.ai/*",
+        "https://chat.deepseek.com/*",
+        "https://perplexity.ai/*",
+        "https://www.perplexity.ai/*",
+        "https://deepseek.com/*",
+        "https://www.deepseek.com/*"
+      ],
+      "js": [
+        "repair.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "sandbox": {
+    "pages": [
+      "viewer.html",
+      "plotly.html"
+    ]
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; connect-src https://cdn.jsdelivr.net https://files.pythonhosted.org https://pypi.org https://pypi.python.org;",
+    "sandbox": "sandbox allow-scripts; default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; worker-src 'self' blob:; child-src 'self' blob:; connect-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:;"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "viewer.html",
+        "viewer.js",
+        "viewer.css",
+        "vendor/plotly.min.js",
+        "plotly.html",
+        "pyodide_runner.html",
+        "pyodide_runner.js",
+        "pyodide_worker.js",
+        "vendor/pyodide.js",
+        "vendor/pyodide.asm.js"
+      ],
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://gemini.google.com/*",
+        "https://claude.ai/*",
+        "https://chat.deepseek.com/*",
+        "https://perplexity.ai/*",
+        "https://www.perplexity.ai/*",
+        "https://deepseek.com/*",
+        "https://www.deepseek.com/*"
+      ]
+    }
+  ]
+}
+

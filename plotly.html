@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>BirdPlot Plotly Viewer</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    #p {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 100% !important;
+    }
+    #error-container {
+      display: none;
+      padding: 18px 22px;
+      color: #b91c1c;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      margin: 20px;
+      font-size: 13px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .modebar {
+      transform: scale(0.85);
+      transform-origin: top right;
+    }
+    @media (max-width: 600px) {
+      .modebar { transform: scale(0.7); }
+    }
+  </style>
+  <script>
+    (function() {
+      var origGetContext = HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext = function(type, attribs) {
+        if (type === '2d') {
+          attribs = Object.assign({ willReadFrequently: true }, attribs || {});
+        }
+        return origGetContext.call(this, type, attribs);
+      };
+    })();
+  </script>
+  <script src="vendor/plotly.min.js"></script>
+</head>
+<body>
+  <div id="error-container"></div>
+  <div id="p"></div>
+  <script>
+  (function() {
+    var isPlotted = false;
+    var cachedData = null;
+    var cachedLayout = null;
+    var cachedFrames = null;
+
+    var params = new URLSearchParams(location.search);
+    var channel = params.get("channel");
+
+    function showError(msg) {
+      var errEl = document.getElementById("error-container");
+      var pEl = document.getElementById("p");
+      if (errEl) {
+        errEl.textContent = "BirdPlot Plotly Error: " + msg;
+        errEl.style.display = "block";
+      }
+      if (pEl && !isPlotted) {
+        pEl.style.display = "none";
+      }
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({
+            source: "studentviz-plotly",
+            action: "error",
+            error: msg,
+            channel: channel
+          }, "*");
+        } catch(e) {}
+      }
+    }
+
+    window.addEventListener("error", function(e) {
+      showError(e.message || "Script execution failed");
+    });
+    window.addEventListener("unhandledrejection", function(e) {
+      showError(e.reason?.message || String(e.reason || "Promise rejection"));
+    });
+
+    function render(data, rawLayout, frames) {
+      cachedData = data || [];
+      cachedLayout = rawLayout || {};
+      cachedFrames = frames || [];
+
+      var p = document.getElementById("p");
+      if (!p) return;
+
+      if (!window.Plotly) {
+        showError("Plotly library (vendor/plotly.min.js) failed to load.");
+        return;
+      }
+
+      var isMobile = window.innerWidth <= 600;
+      delete cachedLayout.width;
+      delete cachedLayout.height;
+
+      var layout = Object.assign({
+        autosize: true,
+        margin: isMobile ? { l: 25, r: 20, t: 30, b: 25 } : { l: 40, r: 25, t: 35, b: 30 },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)'
+      }, cachedLayout);
+
+      delete layout.width;
+      delete layout.height;
+      layout.autosize = true;
+
+      var config = {
+        responsive: true,
+        displayModeBar: 'hover',
+        displaylogo: false
+      };
+
+      var fig = {
+        data: cachedData,
+        layout: layout
+      };
+      if (cachedFrames && cachedFrames.length > 0) {
+        fig.frames = cachedFrames;
+      }
+
+      var plotPromise;
+      if (cachedFrames && cachedFrames.length > 0) {
+        // Plotly.newPlot handles animation frames and interactive sliders/menus natively
+        plotPromise = Plotly.newPlot("p", fig, config);
+      } else {
+        plotPromise = Plotly.react("p", cachedData, layout, config);
+      }
+
+      plotPromise.then(function() {
+        isPlotted = true;
+        Plotly.Plots.resize("p");
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({
+            source: "studentviz-plotly",
+            action: "rendered",
+            channel: channel
+          }, "*");
+        }
+      }).catch(function(err) {
+        console.warn("Plotly render error:", err);
+        showError(err.message || String(err));
+      });
+    }
+
+    function resize() {
+      if (!isPlotted || !window.Plotly) return;
+      var p = document.getElementById("p");
+      if (!p) return;
+      if (p.layout) {
+        delete p.layout.width;
+        delete p.layout.height;
+        p.layout.autosize = true;
+      }
+      try {
+        Plotly.Plots.resize("p");
+      } catch(e) {}
+    }
+
+    window.addEventListener("resize", resize);
+
+    window.addEventListener("message", function(e) {
+      var msg = e.data;
+      if (!msg || msg.source !== "studentviz-host") return;
+      if (channel && msg.channel && msg.channel !== channel) return;
+
+      if (msg.action === "render") {
+        render(msg.data, msg.layout, msg.frames);
+      } else if (msg.action === "resize") {
+        resize();
+      }
+    });
+
+    // Notify host that plotly viewer is ready to accept messages
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        source: "studentviz-plotly",
+        action: "ready",
+        channel: channel
+      }, "*");
+    }
+  })();
+  </script>
+</body>
+</html>

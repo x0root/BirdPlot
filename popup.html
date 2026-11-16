@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>BirdPlot</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="app">
+    <noscript>
+      <div class="noscript-msg" role="alert">JavaScript is required for BirdPlot to operate.</div>
+    </noscript>
+
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 3l5 5-5 5"></path>
+          <path d="M21 8H10a6 6 0 0 0-6 6v3"></path>
+          <circle cx="8" cy="18" r="3"></circle>
+        </svg>
+      </div>
+      <h1>BirdPlot</h1>
+    </header>
+
+    <section class="steps" aria-label="How to use BirdPlot">
+      <div class="step">
+        <span class="step-number" aria-hidden="true">1</span>
+        <p>Open any AI you want.</p>
+      </div>
+      <div class="step">
+        <span class="step-number" aria-hidden="true">2</span>
+        <p>Copy instructions.</p>
+      </div>
+      <div class="step">
+        <span class="step-number" aria-hidden="true">3</span>
+        <p>Done.</p>
+      </div>
+    </section>
+
+    <button class="primary" id="copy" type="button" aria-label="Copy AI instructions to clipboard">
+      <span class="btn-content">
+        <svg class="copy-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <span class="btn-text">Copy instructions</span>
+      </span>
+    </button>
+
+    <label class="toggle-row" for="enabled">
+      <span class="toggle-label">Enabled</span>
+      <input type="checkbox" id="enabled" checked role="switch" aria-checked="true" aria-label="Enable or disable BirdPlot">
+      <span class="switch" aria-hidden="true"></span>
+    </label>
+
+    <div class="sr-only" id="copy-state" role="status" aria-live="polite"></div>
+    <textarea id="prompt" readonly spellcheck="false" aria-label="BirdPlot AI instructions" hidden></textarea>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

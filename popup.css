@@ -1,0 +1,289 @@
+/* ==========================================================================
+   BirdPlot - Minimal Popup
+   ========================================================================== */
+
+:root {
+  color-scheme: light dark;
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --line-strong: #cbd5e1;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --soft: #eef2ff;
+  --radius: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #090d16;
+    --panel: #111827;
+    --ink: #f8fafc;
+    --muted: #94a3b8;
+    --line: #1f2937;
+    --line-strong: #374151;
+    --accent: #6366f1;
+    --accent-hover: #818cf8;
+    --soft: #1e1b4b;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  width: 320px;
+  background: var(--bg);
+}
+
+body {
+  padding: 16px;
+  color: var(--ink);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --------------------------------------------------------------------------
+   Layout
+   -------------------------------------------------------------------------- */
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: appFadeIn 0.2s ease both;
+}
+
+@keyframes appFadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.noscript-msg {
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  font-size: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent) 0%, #312e81 100%);
+  color: #ffffff;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+h1 {
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+/* --------------------------------------------------------------------------
+   Steps
+   -------------------------------------------------------------------------- */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.step-number {
+  display: grid;
+  place-items: center;
+  flex: 0 0 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--soft);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 750;
+  user-select: none;
+}
+
+.step p {
+  font-size: 13px;
+  color: var(--ink);
+}
+
+/* --------------------------------------------------------------------------
+   Copy button
+   -------------------------------------------------------------------------- */
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.primary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 650;
+  font-size: 13px;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+  user-select: none;
+}
+
+.primary:hover {
+  background: var(--accent-hover);
+}
+
+.primary:active {
+  transform: translateY(1px);
+}
+
+.primary.copied {
+  background: #059669;
+}
+
+.btn-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.copy-icon {
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Enable / disable switch
+   -------------------------------------------------------------------------- */
+.toggle-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.15s ease;
+}
+
+.toggle-row:hover {
+  border-color: var(--line-strong);
+}
+
+.toggle-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.toggle-row input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip: rect(0, 0, 0, 0);
+  opacity: 0;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 22px;
+  min-width: 38px;
+  border-radius: 999px;
+  background: #94a3b8;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.toggle-row input:checked + .switch {
+  background: var(--accent);
+}
+
+.toggle-row input:checked + .switch::after {
+  transform: translateX(16px);
+}
+
+/* --------------------------------------------------------------------------
+   Utilities
+   -------------------------------------------------------------------------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  height: 140px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  outline: none;
+  resize: vertical;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
